@@ -6,7 +6,8 @@ class UI(wx.Frame):
     def __init__(self,):
         super(UI, self).__init__(None,style=wx.DEFAULT_FRAME_STYLE | wx.MAXIMIZE)
 
-        self.window_size = (1200,600)
+        self.window_size = (1300,600)
+        self.cell_size = (60,42)
 
         self.__init()
 
@@ -37,68 +38,48 @@ class UI(wx.Frame):
         self.Bind(wx.EVT_TOOL, self.close, fix_order_delete2)
 
         # 布局
-        main_box = wx.BoxSizer(wx.VERTICAL)
+        main_box = wx.GridBagSizer()
+        main_box.SetEmptyCellSize(self.cell_size)
+        st_order_id = wx.StaticText(self.panel, label="结算单号: ",style=wx.ALIGN_LEFT)
+        main_box.Add(st_order_id,pos=(0,0), flag=wx.TOP|wx.BOTTOM|wx.LEFT,border=10)
+        tc_order_id = wx.TextCtrl(self.panel)
+        main_box.Add(tc_order_id,pos=(0,1), span=(1,2), flag=wx.EXPAND|wx.TOP|wx.BOTTOM,border=10)
 
-        top_box = wx.BoxSizer(wx.VERTICAL)
+        st_order_time = wx.StaticText(self.panel, label="开单时间: ", style=wx.ALIGN_LEFT)
+        main_box.Add(st_order_time, pos=(0,3), flag=wx.TOP|wx.BOTTOM|wx.LEFT,border=10)
+        tc_order_time = wx.TextCtrl(self.panel)
+        main_box.Add(tc_order_time, pos=(0,4), span=(1,4), flag=wx.EXPAND|wx.TOP|wx.BOTTOM,border=10)
 
-        line1 = wx.BoxSizer(wx.HORIZONTAL)
-        st_order_id = wx.StaticText(self.panel, label="结算单号: ",style=wx.ALIGN_LEFT,size=(70,20))
-        line1.Add(st_order_id,0, wx.ALIGN_LEFT | wx.TOP | wx.LEFT,15)
-        tc_order_id = wx.TextCtrl(self.panel,size=(150,20))
-        line1.Add(tc_order_id,0, wx.ALIGN_LEFT|wx.TOP,15)
+        st_car_frame = wx.StaticText(self.panel, label="车架号: ", style=wx.ALIGN_LEFT)
+        main_box.Add(st_car_frame, pos=(0, 8), flag=wx.TOP | wx.BOTTOM | wx.LEFT, border=10)
+        tc_car_frame = wx.TextCtrl(self.panel)
+        main_box.Add(tc_car_frame, pos=(0, 9), span=(1, 2), flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=10)
 
-        st_order_time = wx.StaticText(self.panel, label="开单时间: ", style=wx.ALIGN_LEFT,size=(70,20))
-        line1.Add(st_order_time, 0, wx.ALIGN_LEFT | wx.TOP | wx.LEFT,15)
-        tc_order_time = wx.TextCtrl(self.panel, size=(150,20))
-        line1.Add(tc_order_time, 0, wx.ALIGN_LEFT | wx.TOP,15)
+        st_car_id = wx.StaticText(self.panel, label="车牌号: ", style=wx.ALIGN_LEFT)
+        main_box.Add(st_car_id, pos=(1,0), flag=wx.TOP|wx.BOTTOM|wx.LEFT,border=10)
+        tc_car_id = wx.TextCtrl(self.panel)
+        main_box.Add(tc_car_id, pos=(1,1), span=(1,2), flag=wx.EXPAND|wx.TOP|wx.BOTTOM,border=10)
 
-        st_out_time = wx.StaticText(self.panel, label="出厂时间: ", style=wx.ALIGN_LEFT,size=(70,20))
-        line1.Add(st_out_time, 0, wx.ALIGN_LEFT | wx.TOP | wx.LEFT, 15)
-        tc_out_time = wx.TextCtrl(self.panel, size=(150, 20))
-        line1.Add(tc_out_time, 0, wx.ALIGN_LEFT | wx.TOP, 15)
+        st_car_type = wx.StaticText(self.panel, label="车型: ", style=wx.ALIGN_LEFT)
+        main_box.Add(st_car_type, pos=(1,3), flag=wx.TOP|wx.BOTTOM|wx.LEFT,border=10)
+        tc_car_type = wx.TextCtrl(self.panel)
+        main_box.Add(tc_car_type, pos=(1,4), span=(1,2), flag=wx.EXPAND|wx.TOP|wx.BOTTOM,border=10)
 
-        st_pay_time = wx.StaticText(self.panel, label="结算时间: ", style=wx.ALIGN_LEFT,size=(70,20))
-        line1.Add(st_pay_time, 0, wx.ALIGN_LEFT | wx.TOP | wx.LEFT, 15)
-        tc_pay_time = wx.TextCtrl(self.panel, size=(150, 20))
-        line1.Add(tc_pay_time, 0, wx.ALIGN_LEFT | wx.TOP, 15)
+        st_car_owner = wx.StaticText(self.panel, label="车主: ", style=wx.ALIGN_LEFT)
+        main_box.Add(st_car_owner, pos=(2, 0), flag=wx.TOP | wx.BOTTOM | wx.LEFT, border=10)
+        tc_car_owner = wx.TextCtrl(self.panel)
+        main_box.Add(tc_car_owner, pos=(2, 1), span=(1, 2), flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=10)
 
-        line2 = wx.BoxSizer(wx.HORIZONTAL)
-        st_car_id = wx.StaticText(self.panel, label="车牌号: ", style=wx.ALIGN_LEFT,size=(70,20))
-        line2.Add(st_car_id, 0, wx.ALIGN_LEFT | wx.TOP | wx.LEFT, 15)
-        tc_car_id = wx.TextCtrl(self.panel, size=(150, 20))
-        line2.Add(tc_car_id, 0, wx.ALIGN_LEFT | wx.TOP, 15)
+        st_phone = wx.StaticText(self.panel, label="联系电话: ", style=wx.ALIGN_LEFT, )
+        main_box.Add(st_phone, pos=(2, 3), flag=wx.TOP | wx.BOTTOM | wx.LEFT, border=10)
+        tc_phone = wx.TextCtrl(self.panel)
+        main_box.Add(tc_phone, pos=(2, 4), span=(1, 2), flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=10)
 
-        st_car_type = wx.StaticText(self.panel, label="车型: ", style=wx.ALIGN_LEFT, size=(70, 20))
-        line2.Add(st_car_type, 0, wx.ALIGN_LEFT | wx.TOP | wx.LEFT, 15)
-        tc_car_type = wx.TextCtrl(self.panel, size=(150, 20))
-        line2.Add(tc_car_type, 0, wx.ALIGN_LEFT | wx.TOP, 15)
+        st_remark = wx.StaticText(self.panel, label="备注: ", style=wx.ALIGN_LEFT)
+        main_box.Add(st_remark,pos=(1,6), flag=wx.ALL,border=10)
+        tc_remark = wx.TextCtrl(self.panel,style=wx.TE_MULTILINE)
+        main_box.Add(tc_remark,pos=(1,7), span=(2,8), flag=wx.EXPAND|wx.ALL,border=10)
 
-        st_car_owner = wx.StaticText(self.panel, label="车主: ", style=wx.ALIGN_LEFT, size=(70, 20))
-        line2.Add(st_car_owner, 0, wx.ALIGN_LEFT | wx.TOP | wx.LEFT, 15)
-        tc_car_owner = wx.TextCtrl(self.panel, size=(150, 20))
-        line2.Add(tc_car_owner, 0, wx.ALIGN_LEFT | wx.TOP, 15)
-
-        st_phone = wx.StaticText(self.panel, label="联系电话: ", style=wx.ALIGN_LEFT, size=(70, 20))
-        line2.Add(st_phone, 0, wx.ALIGN_LEFT | wx.TOP | wx.LEFT, 15)
-        tc_phone = wx.TextCtrl(self.panel, size=(150, 20))
-        line2.Add(tc_phone, 0, wx.ALIGN_LEFT | wx.TOP, 15)
-
-        line3 = wx.BoxSizer(wx.HORIZONTAL)
-        st_car_frame = wx.StaticText(self.panel, label="车架号: ", style=wx.ALIGN_LEFT, size=(70, 20))
-        line3.Add(st_car_frame, 0, wx.ALIGN_LEFT | wx.TOP | wx.LEFT, 15)
-        tc_car_frame = wx.TextCtrl(self.panel, size=(150, 20))
-        line3.Add(tc_car_frame, 0, wx.ALIGN_LEFT | wx.TOP, 15)
-
-        st_remark = wx.StaticText(self.panel, label="备注: ", style=wx.TE_MULTILINE, size=(70, 20))
-        line3.Add(st_remark, 0, wx.ALIGN_LEFT | wx.TOP | wx.LEFT, 15)
-        tc_remark = wx.TextCtrl(self.panel, size=(400, 50))
-        line3.Add(tc_remark, 0, wx.ALIGN_LEFT | wx.TOP, 15)
-
-        top_box.Add(line1)
-        top_box.Add(line2)
-        top_box.Add(line3)
-
-        bottom_box = wx.BoxSizer(wx.HORIZONTAL)
         self.lc = wx.ListCtrl(self.panel, 0, style=wx.LC_REPORT | wx.EXPAND,size=(800,300))
         columns = [
             '维修单号',
@@ -114,19 +95,21 @@ class UI(wx.Frame):
         for index, column in enumerate(columns):
             self.lc.InsertColumn(index, column)
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.select, self.lc)
-        bottom_box.Add(self.lc,0,wx.EXPAND | wx.TOP | wx.LEFT, 15)
+        main_box.Add(self.lc,pos=(4,0), span=(10,20), flag=wx.EXPAND|wx.ALL,border=10)
 
-        main_box.Add(top_box)
-        main_box.Add(bottom_box)
-        self.panel.SetSizer(main_box)
+        # self.panel.SetSizer(main_box)
         # size
-        # self.panel.SetSizerAndFit(main_box)
+        main_box.AddGrowableRow(6)
+        self.panel.SetSizerAndFit(main_box)
         # self.panel.Bind(wx.EVT_SIZE,self.on_size,self.panel)
         self.SetSize(self.window_size)
         # 标题
         self.SetTitle('GUIME')
         # 居中
         self.Centre()
+
+        print(main_box.GetEmptyCellSize())
+        print(main_box.GetCellSize(0, 3))
 
     def select(self,e):
         choice = self.lc.GetFirstSelected()
@@ -169,3 +152,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
