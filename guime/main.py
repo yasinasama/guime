@@ -6,7 +6,7 @@ class UI(wx.Frame):
     def __init__(self,):
         super(UI, self).__init__(None,style=wx.DEFAULT_FRAME_STYLE | wx.MAXIMIZE)
 
-        self.window_size = (1300,600)
+        self.window_size = (1000,600)
         self.cell_size = (60,42)
 
         self.__init()
@@ -78,7 +78,7 @@ class UI(wx.Frame):
         st_remark = wx.StaticText(self.panel, label="备注: ", style=wx.ALIGN_LEFT)
         main_box.Add(st_remark,pos=(1,6), flag=wx.ALL,border=10)
         tc_remark = wx.TextCtrl(self.panel,style=wx.TE_MULTILINE)
-        main_box.Add(tc_remark,pos=(1,7), span=(2,8), flag=wx.EXPAND|wx.ALL,border=10)
+        main_box.Add(tc_remark,pos=(1,7), span=(2,4), flag=wx.EXPAND|wx.ALL,border=10)
 
         self.lc = wx.ListCtrl(self.panel, 0, style=wx.LC_REPORT | wx.EXPAND,size=(800,300))
         columns = [
@@ -95,21 +95,36 @@ class UI(wx.Frame):
         for index, column in enumerate(columns):
             self.lc.InsertColumn(index, column)
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.select, self.lc)
-        main_box.Add(self.lc,pos=(4,0), span=(10,20), flag=wx.EXPAND|wx.ALL,border=10)
+        main_box.Add(self.lc,pos=(4,0), span=(8,8), flag=wx.EXPAND|wx.BOTTOM | wx.LEFT,border=10)
 
-        # self.panel.SetSizer(main_box)
-        # size
-        main_box.AddGrowableRow(6)
+        self.lc2 = wx.ListCtrl(self.panel, 0, style=wx.LC_REPORT | wx.EXPAND, size=(400, 300))
+        columns2 = [
+            '维修单号',
+            '维修项目',
+            '零件费',
+            '备注'
+        ]
+        for index, column in enumerate(columns2):
+            self.lc2.InsertColumn(index, column)
+        self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.select2, self.lc2)
+        main_box.Add(self.lc2, pos=(4, 8), span=(4,4), flag=wx.EXPAND |wx.BOTTOM | wx.LEFT, border=10)
+
+        # # size
+        # main_box.AddGrowableRow(6)
         self.panel.SetSizerAndFit(main_box)
-        # self.panel.Bind(wx.EVT_SIZE,self.on_size,self.panel)
         self.SetSize(self.window_size)
+
+
         # 标题
         self.SetTitle('GUIME')
         # 居中
         self.Centre()
 
-        print(main_box.GetEmptyCellSize())
-        print(main_box.GetCellSize(0, 3))
+    def select2(self,e):
+        choice = self.lc2.GetFirstSelected()
+        item = self.lc2.GetItem(itemIdx=choice, col=0)
+        textItem = item.GetText()
+        print(textItem)
 
     def select(self,e):
         choice = self.lc.GetFirstSelected()
