@@ -39,21 +39,21 @@ class UI(wx.Frame):
 
         # 布局
         main_box = wx.GridBagSizer()
-        main_box.SetEmptyCellSize(self.cell_size)
+        main_box.SetEmptyCellSize((20, 20))
         st_order_id = wx.StaticText(self.panel, label="结算单号: ",style=wx.ALIGN_LEFT)
         main_box.Add(st_order_id,pos=(0,0), flag=wx.TOP|wx.BOTTOM|wx.LEFT,border=10)
         tc_order_id = wx.TextCtrl(self.panel)
         main_box.Add(tc_order_id,pos=(0,1), span=(1,2), flag=wx.EXPAND|wx.TOP|wx.BOTTOM,border=10)
 
-        st_order_time = wx.StaticText(self.panel, label="开单时间: ", style=wx.ALIGN_LEFT)
-        main_box.Add(st_order_time, pos=(0,3), flag=wx.TOP|wx.BOTTOM|wx.LEFT,border=10)
-        tc_order_time = wx.TextCtrl(self.panel)
-        main_box.Add(tc_order_time, pos=(0,4), span=(1,4), flag=wx.EXPAND|wx.TOP|wx.BOTTOM,border=10)
-
         st_car_frame = wx.StaticText(self.panel, label="车架号: ", style=wx.ALIGN_LEFT)
-        main_box.Add(st_car_frame, pos=(0, 8), flag=wx.TOP | wx.BOTTOM | wx.LEFT, border=10)
+        main_box.Add(st_car_frame, pos=(0, 3), flag=wx.TOP | wx.BOTTOM | wx.LEFT, border=10)
         tc_car_frame = wx.TextCtrl(self.panel)
-        main_box.Add(tc_car_frame, pos=(0, 9), span=(1, 2), flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=10)
+        main_box.Add(tc_car_frame, pos=(0, 4), span=(1, 3), flag=wx.EXPAND|wx.TOP | wx.BOTTOM, border=10)
+
+        st_order_time = wx.StaticText(self.panel, label="开单时间: ", style=wx.ALIGN_LEFT)
+        main_box.Add(st_order_time, pos=(0,7), flag=wx.TOP|wx.BOTTOM|wx.LEFT,border=10)
+        tc_order_time = wx.TextCtrl(self.panel)
+        main_box.Add(tc_order_time, pos=(0,8), span=(1,4), flag=wx.EXPAND|wx.TOP|wx.BOTTOM,border=10)
 
         st_car_id = wx.StaticText(self.panel, label="车牌号: ", style=wx.ALIGN_LEFT)
         main_box.Add(st_car_id, pos=(1,0), flag=wx.TOP|wx.BOTTOM|wx.LEFT,border=10)
@@ -68,19 +68,21 @@ class UI(wx.Frame):
         st_car_owner = wx.StaticText(self.panel, label="车主: ", style=wx.ALIGN_LEFT)
         main_box.Add(st_car_owner, pos=(2, 0), flag=wx.TOP | wx.BOTTOM | wx.LEFT, border=10)
         tc_car_owner = wx.TextCtrl(self.panel)
-        main_box.Add(tc_car_owner, pos=(2, 1), span=(1, 2), flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=10)
+        main_box.Add(tc_car_owner, pos=(2, 1), span=(1, 2), flag=wx.EXPAND|wx.TOP | wx.BOTTOM, border=10)
 
         st_phone = wx.StaticText(self.panel, label="联系电话: ", style=wx.ALIGN_LEFT, )
         main_box.Add(st_phone, pos=(2, 3), flag=wx.TOP | wx.BOTTOM | wx.LEFT, border=10)
         tc_phone = wx.TextCtrl(self.panel)
-        main_box.Add(tc_phone, pos=(2, 4), span=(1, 2), flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=10)
+        main_box.Add(tc_phone, pos=(2, 4), span=(1, 2), flag=wx.EXPAND|wx.TOP | wx.BOTTOM, border=10)
 
         st_remark = wx.StaticText(self.panel, label="备注: ", style=wx.ALIGN_LEFT)
-        main_box.Add(st_remark,pos=(1,6), flag=wx.ALL,border=10)
+        main_box.Add(st_remark,pos=(1,7), flag=wx.ALL,border=10)
         tc_remark = wx.TextCtrl(self.panel,style=wx.TE_MULTILINE)
-        main_box.Add(tc_remark,pos=(1,7), span=(2,4), flag=wx.EXPAND|wx.ALL,border=10)
+        main_box.Add(tc_remark,pos=(1,8), span=(2,4), flag=wx.EXPAND|wx.TOP|wx.BOTTOM,border=10)
 
-        self.lc = wx.ListCtrl(self.panel, 0, style=wx.LC_REPORT | wx.EXPAND,size=(800,300))
+        print(main_box.FindItemAtPosition((1,8)))
+
+        self.lc = wx.ListCtrl(self.panel, 0, style=wx.LC_REPORT | wx.EXPAND)
         columns = [
             '维修单号',
             '车牌号',
@@ -95,19 +97,19 @@ class UI(wx.Frame):
         for index, column in enumerate(columns):
             self.lc.InsertColumn(index, column)
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.select, self.lc)
-        main_box.Add(self.lc,pos=(4,0), span=(8,8), flag=wx.EXPAND|wx.BOTTOM | wx.LEFT,border=10)
-
-        self.lc2 = wx.ListCtrl(self.panel, 0, style=wx.LC_REPORT | wx.EXPAND, size=(400, 300))
-        columns2 = [
-            '维修单号',
-            '维修项目',
-            '零件费',
-            '备注'
-        ]
-        for index, column in enumerate(columns2):
-            self.lc2.InsertColumn(index, column)
-        self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.select2, self.lc2)
-        main_box.Add(self.lc2, pos=(4, 8), span=(4,4), flag=wx.EXPAND |wx.BOTTOM | wx.LEFT, border=10)
+        main_box.Add(self.lc,pos=(4,0), span=(8,12), flag=wx.BOTTOM | wx.LEFT,border=10)
+        #
+        # self.lc2 = wx.ListCtrl(self.panel, 0, style=wx.LC_REPORT | wx.EXPAND, size=(400, 300))
+        # columns2 = [
+        #     '维修单号',
+        #     '维修项目',
+        #     '零件费',
+        #     '备注'
+        # ]
+        # for index, column in enumerate(columns2):
+        #     self.lc2.InsertColumn(index, column)
+        # self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.select2, self.lc2)
+        # main_box.Add(self.lc2, pos=(4, 13), span=(4,4), flag=wx.EXPAND |wx.BOTTOM | wx.LEFT, border=10)
 
         # # size
         # main_box.AddGrowableRow(6)
@@ -160,7 +162,7 @@ def main():
 
     app = wx.App()
     ex = UI()
-    ex.set_values([['1','2','33333333111111111111122132134123413412341341sssssss','4','5','6','7','8','9']]*10)
+    # ex.set_values([['1','2','33333333111111111111122132134123413412341341sssssss','4','5','6','7','8','9']]*10)
     ex.show()
     app.MainLoop()
 
