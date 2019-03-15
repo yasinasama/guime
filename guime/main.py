@@ -147,7 +147,17 @@ class MainUI(MyFrame):
         self.create_table()
 
     def on_key(self,e):
-        print(e.GetKeyCode())
+        # ctrl c 复制
+        self.copy(e)
+
+    def copy(self,e):
+        cell_value = self.get_cell_value(self.table.GetGridCursorRow(), self.table.GetGridCursorCol())
+        if e.ControlDown() and e.GetKeyCode() == 67:
+            clipboard = wx.TextDataObject()
+            clipboard.SetText(cell_value)
+            if wx.TheClipboard.Open():
+                wx.TheClipboard.SetData(clipboard)
+                wx.TheClipboard.Close()
 
     # 查询触发
     def on_search(self, e):
