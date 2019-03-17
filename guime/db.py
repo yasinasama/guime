@@ -72,7 +72,8 @@ CREATE_ORDER = '''
         car_user    varchar(50) default '',
         phone       varchar(20) default '',
         car_frame   varchar(50) default '',
-        order_time  datetime default '',
+        order_time  integer default 0,
+        mile        integer default 0,
         remark      text default ''
     );
 '''
@@ -82,7 +83,9 @@ CREATE_DETAIL = '''
         id          integer primary key autoincrement,
         order_id    varchar(50) default '',
         project     varchar(50) default '',
-        pay         varchar(50) default '',
+        price       integer default 0,
+        number      integer default 0,
+        pay         integer default 0,
         remark      text default ''
     );
 '''

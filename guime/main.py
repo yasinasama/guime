@@ -9,12 +9,12 @@ import wx.adv
 from db import DB_CONN
 
 
-orders_key = ['order_id', 'car_id', 'car_type', 'car_user', 'phone', 'car_frame', 'order_time', 'remark']
-orders_name = ['结算单号', '车牌号码', '车辆类型', '车主姓名', '联系电话', '车架号码', '开单时间', '备注信息']
+orders_key = ['order_id', 'car_id', 'car_type', 'car_user', 'phone', 'car_frame', 'order_time', 'mile','remark']
+orders_name = ['结算单号', '车牌号码', '车辆类型', '车主姓名', '联系电话', '车架号码', '开单时间', '本次里程','备注信息']
 orders_map = dict(zip(orders_key, orders_name))
 
-detail_key = ['order_id', 'project', 'pay', 'remark']
-detail_name = ['结算单号', '维修项目', '零件费用', '备注信息']
+detail_key = ['order_id', 'project','price' ,'number','pay', 'remark']
+detail_name = ['结算单号', '维修项目', '零件单价','零件数量','零件费用', '备注信息']
 detail_map = dict(zip(detail_key, detail_name))
 
 
@@ -70,6 +70,8 @@ class MyFrame(wx.Frame):
         return tc.GetValue().strip()
 
     def set_tc_value(self,tc,value):
+        if isinstance(value,int):
+            value = str(value)
         tc.SetValue(value)
 
     def get_cell_value(self,row,col):
@@ -79,14 +81,16 @@ class MyFrame(wx.Frame):
 
     def set_cell_value(self,row,col,value):
         if hasattr(self,'table'):
+            if isinstance(value,int):
+                value = str(value)
             return self.table.SetCellValue(row,col,value)
         return None
 
 
 class MainUI(MyFrame):
-    def __init__(self,title='维修记录单管理软件',size=(1100, 750)):
+    def __init__(self,title='维修记录单管理软件',size=(1200, 750)):
         self.table_row_nums = 20
-        self.table_col_nums = 8
+        self.table_col_nums = 9
 
         self.orders_key = orders_key
         self.orders_name = orders_name
@@ -110,8 +114,9 @@ class MainUI(MyFrame):
         self.table.SetColLabelValue(4, '联系电话')
         self.table.SetColLabelValue(5, '车架号码')
         self.table.SetColLabelValue(6, '开单时间')
-        self.table.SetColLabelValue(7, '备注信息')
-        self.table.SetColSize(7, 200)
+        self.table.SetColLabelValue(7, '本次里程')
+        self.table.SetColLabelValue(8, '备注信息')
+        self.table.SetColSize(8, 200)
         self.table.Bind(wx.grid.EVT_GRID_CELL_LEFT_DCLICK,self.show_detail)
         self.table.Bind(wx.EVT_KEY_DOWN,self.on_key)
         self.main_box.Add(self.table, pos=(5, 0), span=(20, 8), flag=wx.EXPAND | wx.ALL, border=10)
@@ -119,10 +124,10 @@ class MainUI(MyFrame):
     def _init_ui(self):
         self.create_st('结算单号', (1, 0))
         self.create_tc('order_id', (1, 1),style=wx.TE_PROCESS_ENTER)
-        self.create_st('车架号码', (1, 2))
-        self.create_tc('car_frame', (1, 3), (1, 3), size=(220, 25),style=wx.TE_PROCESS_ENTER)
-        self.create_st('开单时间', (1, 6))
-        self.create_tc('order_time', (1, 7), size=(220, 25),style=wx.TE_PROCESS_ENTER)
+        self.create_st('开单时间', (1, 2))
+        self.create_tc('order_time', (1, 3), style=wx.TE_PROCESS_ENTER)
+        self.create_st('车架号码', (1, 4))
+        self.create_tc('car_frame', (1, 5), size=(220, 25),style=wx.TE_PROCESS_ENTER)
         self.create_st('车牌号码', (2, 0))
         self.create_tc('car_id', (2, 1),style=wx.TE_PROCESS_ENTER)
         self.create_st('车辆类型', (2, 2))
@@ -130,9 +135,9 @@ class MainUI(MyFrame):
         self.create_st('车主姓名', (3, 0))
         self.create_tc('car_user', (3, 1),style=wx.TE_PROCESS_ENTER)
         self.create_st('联系电话', (3, 2))
-        self.create_tc('phone', (3, 3), (1, 2),style=wx.TE_PROCESS_ENTER)
-        self.create_st('备注信息', (2, 6))
-        self.create_tc('remark', (2, 7), span=(2, 1), style=wx.TE_PROCESS_ENTER|wx.TE_MULTILINE, size=(220, 70))
+        self.create_tc('phone', (3, 3),style=wx.TE_PROCESS_ENTER)
+        self.create_st('备注信息', (2, 4))
+        self.create_tc('remark', (2, 5), span=(2, 1), style=wx.TE_PROCESS_ENTER|wx.TE_MULTILINE, size=(220, 70))
 
         # 按回车搜索
         for tc in self.tcs.values():
@@ -193,7 +198,8 @@ class MainUI(MyFrame):
 
     # 单元格显示数据
     def show_data(self,skip):
-        orders_key = self.orders_key
+        orders_key = self.orders_key.copy()
+        orders_key.remove('mile')
         conditions = '1=1 '
         conditions_value = []
         for order_key in orders_key:
@@ -205,8 +211,8 @@ class MainUI(MyFrame):
         count_sql = 'select count(1) from orders where %s'%conditions
         select_sql = \
         '''
-        select order_id,car_id,car_type,car_user,phone,car_frame,order_time,remark 
-        from orders where %s order by order_time desc limit %s,%s
+        select order_id,car_id,car_type,car_user,phone,car_frame,order_time,mile,remark 
+        from orders where %s order by order_id desc limit %s,%s
         ''' % (conditions, skip,self.table_row_nums)
         try:
             count = DB_CONN.query(count_sql,conditions_value)
@@ -236,7 +242,7 @@ class ChildFrame(MyFrame):
     def __init__(self,title,size=(600,620),order_id=None):
         self.title = title
         self.table_row_nums = 10
-        self.table_col_nums = 3
+        self.table_col_nums = 5
         self.order_id = order_id
 
         self.orders_key = orders_key
@@ -255,13 +261,13 @@ class ChildFrame(MyFrame):
         if self.title == '查看':
             select_order = \
             '''
-            select order_id,car_id,car_type,car_user,phone,car_frame,order_time,remark from orders where order_id=?
+            select order_id,car_id,car_type,car_user,phone,car_frame,order_time,mile,remark from orders where order_id=?
             '''
             self.order_info = DB_CONN.query(select_order, [self.order_id])
             if not self.order_info or not self.order_info[0]:
                 self.order_info = None
 
-            select_detail = 'select project,pay,remark from detail where order_id=?'
+            select_detail = 'select project,price,number,pay,remark from detail where order_id=?'
             self.detail_info = DB_CONN.query(select_detail, [self.order_id])
             if not self.detail_info:
                 self.detail_info = None
@@ -277,7 +283,8 @@ class ChildFrame(MyFrame):
                 self.set_tc_value(self.tcs['phone'],order_info[4])
                 self.set_tc_value(self.tcs['car_frame'],order_info[5])
                 self.set_tc_value(self.tcs['order_time'],order_info[6])
-                self.set_tc_value(self.tcs['remark'],order_info[7])
+                self.set_tc_value(self.tcs['mile'], order_info[7])
+                self.set_tc_value(self.tcs['remark'],order_info[8])
 
             if self.detail_info:
                 for row,value in enumerate(self.detail_info):
@@ -297,10 +304,14 @@ class ChildFrame(MyFrame):
         self.table.SetDefaultRowSize(25)
         self.table.SetColLabelValue(0, '维修项目')
         self.table.SetColSize(0, 100)
-        self.table.SetColLabelValue(1, '零件费用')
-        self.table.SetColSize(1, 70)
-        self.table.SetColLabelValue(2, '备注信息')
-        self.table.SetColSize(2, 310)
+        self.table.SetColLabelValue(1, '零件单价')
+        self.table.SetColSize(1, 50)
+        self.table.SetColLabelValue(2, '零件数量')
+        self.table.SetColSize(2, 50)
+        self.table.SetColLabelValue(3, '零件费用')
+        self.table.SetColSize(3, 50)
+        self.table.SetColLabelValue(4, '备注信息')
+        self.table.SetColSize(4, 200)
         self.main_box.Add(self.table, pos=(7, 0), span=(10, 4), flag=wx.EXPAND | wx.ALL, border=10)
 
     def _init_ui(self):
@@ -314,10 +325,12 @@ class ChildFrame(MyFrame):
         self.create_tc('order_time', (2, 3), size=(220, 25))
         self.create_st('车辆类型', (3, 0))
         self.create_tc('car_type', (3, 1))
+        self.create_st('本次里程', (3, 2))
+        self.create_tc('mile', (3, 3))
         self.create_st('车主姓名', (4, 0))
         self.create_tc('car_user', (4, 1))
-        self.create_st('备注信息', (3, 2))
-        self.create_tc('remark', (3, 3), span=(2, 1), size=(220, 70))
+        self.create_st('备注信息', (4, 2))
+        self.create_tc('remark', (4, 3), span=(2, 1), size=(220, 70))
         self.create_st('联系电话', (5, 0))
         self.create_tc('phone', (5, 1))
 
@@ -350,18 +363,11 @@ class ChildFrame(MyFrame):
     def on_save_rows(self,e):
         # 保存正在编辑的单元格中的数据
         self.table.SaveEditControlValue()
-
-        orders_key = self.orders_key[1:-1]
-        for order_key in orders_key:
-            ins = self.tcs[order_key]
-            if not self.has_tc_value(ins):
-                wx.MessageBox('%s不能为空!'%self.orders_map[order_key],'提示',wx.OK)
-                return
         try:
             self.save_main_order()
             self.save_detail()
-        except:
-            wx.MessageBox(traceback.format_exc(), '错误', wx.ICON_ERROR)
+        except Exception as e:
+            wx.MessageBox(str(e), '错误', wx.ICON_ERROR)
             return
         wx.MessageBox('保存成功!', '完成', wx.OK)
 
@@ -376,13 +382,10 @@ class ChildFrame(MyFrame):
         # upsert
         insert_sql = \
         '''
-        insert into orders(order_id,car_id,car_type,car_user,phone,car_frame,order_time,remark) 
-        values (?,?,?,?,?,?,?,?) 
-        on conflict(order_id) 
-        do update set car_id=?,car_type=?,car_user=?,phone=?,car_frame=?,order_time=?,remark=?
+        replace into orders(order_id,car_id,car_type,car_user,phone,car_frame,order_time,mile,remark)
+        values (?,?,?,?,?,?,?,?,?)
         '''
-
-        DB_CONN.insert(insert_sql,[[*(value+value[1:])]])
+        DB_CONN.insert(insert_sql,[value])
 
     # 保存明细
     def save_detail(self):
@@ -400,7 +403,7 @@ class ChildFrame(MyFrame):
         delete_sql = 'delete from detail where order_id=?'
         DB_CONN.delete(delete_sql,[(order_id,)])
         if values:
-            insert_sql = 'insert into detail(order_id,project,pay,remark) values (?,?,?,?)'
+            insert_sql = 'insert into detail(order_id,project,price,number,pay,remark) values (?,?,?,?,?,?)'
             DB_CONN.insert(insert_sql,values)
 
 
