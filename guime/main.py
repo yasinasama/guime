@@ -261,7 +261,7 @@ class ChildFrame(MyFrame):
         if self.title == '查看':
             select_order = \
             '''
-            select order_id,car_id,car_type,car_user,phone,car_frame,order_time,mile,remark from orders where order_id=?
+            select order_id,car_id,car_type,car_user,phone,car_frame,order_time,mile,total_pay,remark from orders where order_id=?
             '''
             self.order_info = DB_CONN.query(select_order, [self.order_id])
             if not self.order_info or not self.order_info[0]:
@@ -294,35 +294,35 @@ class ChildFrame(MyFrame):
                         self.set_cell_value(row, col, value[col])
         else:
             gen_id = generate_id(DB_CONN)
-            today = datetime.strftime(datetime.now(), '%Y-%m-%d')
+            today = datetime.strftime(datetime.now(), '%Y.%m.%d')
             self.set_tc_value(self.tcs['order_id'], gen_id)
             self.set_tc_value(self.tcs['order_time'], today)
 
     def create_table(self):
-        self.table = wx.grid.Grid(self, -1)
+        self.table = wx.grid.Grid(self.panel,-1)
         self.table.CreateGrid(self.table_row_nums, self.table_col_nums)
         self.table.SetDefaultRowSize(25)
         self.table.SetColLabelValue(0, '维修项目')
-        self.table.SetColSize(0, 100)
-        self.table.SetColLabelValue(1, '零件单价')
+        self.table.SetColSize(0, 250)
+        self.table.SetColLabelValue(1, '单价')
         self.table.SetColSize(1, 50)
-        self.table.SetColLabelValue(2, '零件数量')
+        self.table.SetColLabelValue(2, '数量')
         self.table.SetColSize(2, 50)
-        self.table.SetColLabelValue(3, '零件费用')
+        self.table.SetColLabelValue(3, '费用')
         self.table.SetColSize(3, 50)
         self.table.SetColLabelValue(4, '备注信息')
-        self.table.SetColSize(4, 200)
+        self.table.SetColSize(4, 100)
         self.main_box.Add(self.table, pos=(7, 0), span=(10, 4), flag=wx.EXPAND | wx.ALL, border=10)
 
     def _init_ui(self):
         self.create_st('结算单号', (1, 0))
         self.create_tc('order_id', (1, 1), style=wx.TE_READONLY)
         self.create_st('车架号码', (1, 2))
-        self.create_tc('car_frame', (1, 3), size=(220, 25))
+        self.create_tc('car_frame', (1, 3),(1,2), size=(220, 25))
         self.create_st('车牌号码', (2, 0))
         self.create_tc('car_id', (2, 1))
         self.create_st('开单时间', (2, 2))
-        self.create_tc('order_time', (2, 3), size=(220, 25))
+        self.create_tc('order_time', (2, 3),(1,2))
         self.create_st('车辆类型', (3, 0))
         self.create_tc('car_type', (3, 1))
         self.create_st('本次里程', (3, 2))
@@ -330,13 +330,14 @@ class ChildFrame(MyFrame):
         self.create_st('车主姓名', (4, 0))
         self.create_tc('car_user', (4, 1))
         self.create_st('备注信息', (4, 2))
-        self.create_tc('remark', (4, 3), span=(2, 1), size=(220, 70))
+        self.create_tc('remark', (4, 3), span=(2, 2), size=(220, 70))
         self.create_st('联系电话', (5, 0))
         self.create_tc('phone', (5, 1))
 
         self.create_button('添加', (6, 0), wx.TOP | wx.LEFT, self.on_add_rows)
         self.create_button('删除', (6, 1), bind=self.on_delete_rows)
         self.create_button('保存', (6, 2), bind=self.on_save_rows)
+        self.total_pay = self.create_st('合计:0', (6, 3))
 
         self.create_table()
 
@@ -371,6 +372,18 @@ class ChildFrame(MyFrame):
             return
         wx.MessageBox('保存成功!', '完成', wx.OK)
 
+    def set_total_pay(self):
+        total_pay = 0
+        rows = self.table.GetNumberRows()
+        for row in range(rows):
+            pay = self.get_cell_value(row, 3) or '0'
+            if not pay.isdigit():
+                raise Exception('请输入正确的费用!')
+            total_pay += int(pay)
+        self.total_pay.SetLabelText('合计:%d'%total_pay)
+        return total_pay
+
+
     # 保存主单据
     def save_main_order(self):
         tcs = self.orders_key
@@ -378,12 +391,12 @@ class ChildFrame(MyFrame):
         for i in tcs:
             ins = self.tcs[i]
             value.append(self.get_tc_value(ins))
-
+        value.append(self.set_total_pay())
         # upsert
         insert_sql = \
         '''
-        replace into orders(order_id,car_id,car_type,car_user,phone,car_frame,order_time,mile,remark)
-        values (?,?,?,?,?,?,?,?,?)
+        replace into orders(order_id,car_id,car_type,car_user,phone,car_frame,order_time,mile,remark,total_pay)
+        values (?,?,?,?,?,?,?,?,?,?)
         '''
         DB_CONN.insert(insert_sql,[value])
 

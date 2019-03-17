@@ -74,6 +74,7 @@ CREATE_ORDER = '''
         car_frame   varchar(50) default '',
         order_time  integer default 0,
         mile        integer default 0,
+        total_pay   integer default 0,
         remark      text default ''
     );
 '''
