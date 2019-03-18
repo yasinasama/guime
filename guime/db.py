@@ -42,7 +42,14 @@ class DB:
         except:
             raise
 
-    delete = insert
+    def delete(self,sql,value):
+        if not self._cur:
+            return
+        try:
+            self._cur.execute(sql,value)
+            self.commit()
+        except:
+            raise
 
     def commit(self):
         try:

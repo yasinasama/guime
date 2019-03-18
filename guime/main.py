@@ -88,7 +88,7 @@ class MyFrame(wx.Frame):
 
 
 class MainUI(MyFrame):
-    def __init__(self,title='维修记录单管理软件',size=(1250, 750)):
+    def __init__(self,title='维修记录单管理软件',size=(1250, 770)):
         self.table_row_nums = 20
         self.table_col_nums = 11
 
@@ -155,6 +155,7 @@ class MainUI(MyFrame):
 
         self.create_button('新建', (0, 0), wx.TOP | wx.LEFT, self.on_new)
         self.create_button('查询', (0, 1), bind=self.on_search)
+        self.create_button('删除', (0, 2), bind=self.on_delete)
         self.create_button('上一页', (25, 0),wx.TOP | wx.BOTTOM | wx.LEFT, bind=self.on_pre_search)
         self.page_info = self.create_st('0/0', (25, 1),style=wx.ALIGN_CENTER)
         self.create_button('下一页', (25, 2),wx.TOP | wx.BOTTOM, bind=self.on_next_search)
@@ -173,6 +174,13 @@ class MainUI(MyFrame):
             if wx.TheClipboard.Open():
                 wx.TheClipboard.SetData(clipboard)
                 wx.TheClipboard.Close()
+
+    def on_delete(self,e):
+        curr_row = self.table.GetGridCursorRow()
+        order_id = self.get_cell_value(curr_row,0)
+        sql = 'delete from orders where order_id=?'
+        DB_CONN.delete(sql,[order_id])
+        self.table.DeleteRows(curr_row)
 
     # 查询触发
     def on_search(self, e):
@@ -372,7 +380,6 @@ class ChildFrame(MyFrame):
                 self.set_tc_value(self.tcs['car_user'],car_user)
                 self.set_tc_value(self.tcs['phone'],phone)
 
-
     def on_auto_set_pay(self,e):
         col = e.GetCol()
         if col == 3:
@@ -458,7 +465,7 @@ class ChildFrame(MyFrame):
             if any(line[1:]):
                 values.append(line)
         delete_sql = 'delete from detail where order_id=?'
-        DB_CONN.delete(delete_sql,[(order_id,)])
+        DB_CONN.delete(delete_sql,[order_id])
         if values:
             insert_sql = 'insert into detail(order_id,project,price,number,pay,remark) values (?,?,?,?,?,?)'
             DB_CONN.insert(insert_sql,values)
