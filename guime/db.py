@@ -73,6 +73,7 @@ CREATE_ORDER = '''
         phone       varchar(20) default '',
         car_frame   varchar(50) default '',
         order_time  integer default 0,
+        pay_time    integer default 0,
         mile        integer default 0,
         total_pay   integer default 0,
         remark      text default ''
@@ -108,8 +109,8 @@ else:
 
 if __name__=='__main__':
     # DB_CONN.insert('insert into detail(order_id,project,pay,remark) values(?,?,?,?)',[['aa','aa','aa','aa']])
-    # print(DB_CONN.query('select * from orders',[]))
-    DB_CONN.insert('insert into orders(order_id,remark) values(?,?) on conflict(order_id) do update set phone=?,remark=?;',[('20190315001','12ss33221','gggg','ggg')])
+    print(DB_CONN.query('select * from orders',[]))
+    # DB_CONN.insert('insert into orders(order_id,remark) values(?,?) on conflict(order_id) do update set phone=?,remark=?;',[('20190315001','12ss33221','gggg','ggg')])
     # DB_CONN.insert('''insert into orders(order_id,car_id,car_type,car_user,phone,car_frame,order_time,remark)
     #     values (?,?,?,?,?,?,?,?)
     #     on conflict(order_id)
