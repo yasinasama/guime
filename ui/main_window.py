@@ -140,11 +140,31 @@ class MainPanel(wx.Panel):
         self.st12.SetLabelText('%s/%s' % (cur_page_num, page_nums))
 
     def on_delete(self, e):
-        curr_row = self.table.GetGridCursorRow()
-        order_id = self.table.GetCellValue(curr_row, 0)
-        sql = 'delete from orders where order_id=?'
-        DB_CONN.delete(sql, [order_id])
-        self.on_search(e)
+        rows = self.table.get_selected_rows()
+        if rows:
+            order_ids = [self.table.GetCellValue(row, 0) for row in rows]
+            if any(order_ids):
+                if self.check_delete_dialog():
+                    sql = 'delete from orders where order_id=?'
+                    for order_id in order_ids:
+                        DB_CONN.delete(sql, [order_id])
+                    self.on_search(e)
+
+    def check_delete_dialog(self):
+        check_box = wx.MessageDialog(self, "确定要删除吗?", '警告', wx.YES_NO)
+        code = check_box.ShowModal()
+        if code == wx.ID_YES:
+            return True
+        else:
+            return False
+
+    def check_focus_cell(self):
+        row = self.table.GetGridCursorRow()
+        order_id = self.table.GetCellValue(row, 0)
+        if not order_id:
+            wx.MessageDialog(self, "未选中任何数据!", '', wx.OK).ShowModal()
+            return None
+        return row
 
     # 上一页触发
     def on_pre_search(self, e):
@@ -276,4 +296,9 @@ class MainGrid(MyGrid):
         for row in range(self.row):
             for col in range(self.col):
                 self.SetReadOnly(row, col)
+
+
+
+
+
 

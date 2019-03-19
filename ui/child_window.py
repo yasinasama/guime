@@ -174,18 +174,12 @@ class ChildPanel(wx.Panel):
         self.table.AppendRows()
 
     def on_delete(self, e):
-        if self.table.SelectedRows:
-            up = 0
-            for x in self.table.SelectedRows:
-                self.table.DeleteRows(x-up)
+        rows = self.table.get_selected_rows()
+        if rows:
+            for row in sorted(rows, reverse=True):
+                self.table.DeleteRows(row)
                 if self.table.GetNumberRows() < self.table.row:
                     self.table.AppendRows()
-                up += 1
-        else:
-            row = self.table.GetGridCursorRow()
-            self.table.DeleteRows(row)
-            if self.table.GetNumberRows() < self.table.row:
-                self.table.AppendRows()
 
     def on_save(self, e):
         # 保存正在编辑的单元格中的数据
