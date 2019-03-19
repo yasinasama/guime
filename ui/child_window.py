@@ -156,7 +156,6 @@ class ChildPanel(wx.Panel):
             today = datetime.strftime(datetime.now(), '%Y.%m.%d')
             self.tc1.set_value(gen_id)
             self.tc4.set_value(today)
-            self.tc6.set_value(today)
 
     def on_auto_fillin(self, e):
         car_id = self.tc3.GetValue()
