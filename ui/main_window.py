@@ -50,7 +50,7 @@ class MainPanel(MyPanel):
         self.tc1 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))
         self.tc2 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))
         self.tc3 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))
-        self.tc4 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(220, 25))
+        self.tc4 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(200, 25))
         self.tc5 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))
         self.tc6 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))
         self.tc7 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))

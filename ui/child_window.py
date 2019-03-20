@@ -46,7 +46,7 @@ class ChildPanel(MyPanel):
         st13 = wx.StaticText(self, label='保险到期', style=wx.ALIGN_RIGHT, size=(100, 25))
 
         self.tc1 = MyTextCtrl(self, style=wx.TE_READONLY, size=(100, 25))
-        self.tc2 = MyTextCtrl(self, size=(220, 25))
+        self.tc2 = MyTextCtrl(self, size=(200, 25))
         self.tc3 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))
         self.tc4 = MyTextCtrl(self, size=(100, 25))
         self.tc5 = MyTextCtrl(self, size=(100, 25))
