@@ -12,7 +12,7 @@ from .panel import MyPanel
 
 
 class ChildFrame(wx.Frame):
-    def __init__(self, parent, title, size=(650, 750), order_id=None):
+    def __init__(self, parent, title, size=(620, 720), order_id=None):
         super(ChildFrame, self).__init__(parent=parent, title=title, size=size)
 
         ChildPanel(self, order_id)
@@ -293,12 +293,12 @@ class ChildGrid(MyGrid):
         self.SetColLabelValue(3, '费用')
         self.SetColLabelValue(4, '备注信息')
 
+        self.SetDefaultRowSize(20)
         self.SetColSize(0, 250)
         self.SetColSize(1, 50)
         self.SetColSize(2, 50)
         self.SetColSize(3, 50)
         self.SetColSize(4, 100)
-        self.SetDefaultRowSize(19)
 
         self.Bind(wx.grid.EVT_GRID_CELL_LEFT_CLICK, self.on_auto_set_pay)
 

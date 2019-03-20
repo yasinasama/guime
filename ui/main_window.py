@@ -284,7 +284,7 @@ class MainGrid(MyGrid):
     def __init__(self, parent):
         super(MainGrid, self).__init__(parent=parent)
 
-        self.row = 25
+        self.row = 20
         self.col = 13
 
         self._create()
@@ -307,7 +307,7 @@ class MainGrid(MyGrid):
         self.SetColLabelValue(12, '备注信息')
 
         self.SetDefaultColSize(110)
-        self.SetDefaultRowSize(19)
+        self.SetDefaultRowSize(20)
         self.SetColSize(3, 60)
         self.SetColSize(8, 50)
         self.SetColSize(9, 50)
