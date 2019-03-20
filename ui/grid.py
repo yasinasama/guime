@@ -6,7 +6,7 @@ class MyGrid(wx.grid.Grid):
         super(MyGrid, self).__init__(parent=parent)
 
     def set_cell_value(self, row, col, value):
-        if isinstance(value, int):
+        if isinstance(value, (int, float)):
             value = str(value)
         self.SetCellValue(row, col, value)
 

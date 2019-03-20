@@ -8,10 +8,11 @@ from utils import generate_id
 
 from .textctrl import MyTextCtrl
 from .grid import MyGrid
+from .panel import MyPanel
 
 
 class ChildFrame(wx.Frame):
-    def __init__(self, parent, title, size, order_id=None):
+    def __init__(self, parent, title, size=(620, 700), order_id=None):
         super(ChildFrame, self).__init__(parent=parent, title=title, size=size)
 
         ChildPanel(self, order_id)
@@ -20,7 +21,7 @@ class ChildFrame(wx.Frame):
         self.Show()
 
 
-class ChildPanel(wx.Panel):
+class ChildPanel(MyPanel):
     def __init__(self, parent, order_id=None):
         super(ChildPanel, self).__init__(parent=parent)
 
@@ -41,6 +42,8 @@ class ChildPanel(wx.Panel):
         st9 = wx.StaticText(self, label='联系电话', style=wx.ALIGN_RIGHT, size=(100, 25))
         st10 = wx.StaticText(self, label='合计', style=wx.ALIGN_RIGHT, size=(100, 25))
         st11 = wx.StaticText(self, label='备注信息', style=wx.ALIGN_RIGHT, size=(100, 25))
+        st12 = wx.StaticText(self, label='保险公司', style=wx.ALIGN_RIGHT, size=(100, 25))
+        st13 = wx.StaticText(self, label='保险到期', style=wx.ALIGN_RIGHT, size=(100, 25))
 
         self.tc1 = MyTextCtrl(self, style=wx.TE_READONLY, size=(100, 25))
         self.tc2 = MyTextCtrl(self, size=(220, 25))
@@ -53,6 +56,8 @@ class ChildPanel(wx.Panel):
         self.tc9 = MyTextCtrl(self, size=(100, 25))
         self.tc10 = MyTextCtrl(self, size=(100, 25))
         self.tc11 = MyTextCtrl(self, size=(200, 70))
+        self.tc12 = MyTextCtrl(self, size=(100, 25))
+        self.tc13 = MyTextCtrl(self, size=(100, 25))
 
         btn1 = wx.Button(self, label='添加')
         btn2 = wx.Button(self, label='删除')
@@ -70,7 +75,9 @@ class ChildPanel(wx.Panel):
         main_box.Add(st8, pos=(4, 2), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
         main_box.Add(st9, pos=(5, 0), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
         main_box.Add(st10, pos=(5, 2), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
-        main_box.Add(st11, pos=(6, 0), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
+        main_box.Add(st11, pos=(7, 0), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
+        main_box.Add(st12, pos=(6, 0), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
+        main_box.Add(st13, pos=(6, 2), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
 
         main_box.Add(self.tc1, pos=(1, 1), flag=wx.TOP | wx.BOTTOM, border=10)
         main_box.Add(self.tc2, pos=(1, 3), span=(1, 2), flag=wx.TOP | wx.BOTTOM, border=10)
@@ -82,13 +89,15 @@ class ChildPanel(wx.Panel):
         main_box.Add(self.tc8, pos=(4, 3), flag=wx.TOP | wx.BOTTOM, border=10)
         main_box.Add(self.tc9, pos=(5, 1), flag=wx.TOP | wx.BOTTOM, border=10)
         main_box.Add(self.tc10, pos=(5, 3), flag=wx.TOP | wx.BOTTOM, border=10)
-        main_box.Add(self.tc11, pos=(6, 1), span=(2, 2), flag=wx.TOP | wx.BOTTOM, border=10)
+        main_box.Add(self.tc11, pos=(7, 1), span=(2, 2), flag=wx.TOP | wx.BOTTOM, border=10)
+        main_box.Add(self.tc12, pos=(6, 1), flag=wx.TOP | wx.BOTTOM, border=10)
+        main_box.Add(self.tc13, pos=(6, 3), flag=wx.TOP | wx.BOTTOM, border=10)
 
-        main_box.Add(btn1, pos=(8, 0), flag=wx.TOP | wx.LEFT, border=10)
-        main_box.Add(btn2, pos=(8, 1), flag=wx.TOP, border=10)
-        main_box.Add(btn3, pos=(8, 2), flag=wx.TOP, border=10)
+        main_box.Add(btn1, pos=(9, 0), flag=wx.TOP | wx.LEFT, border=10)
+        main_box.Add(btn2, pos=(9, 1), flag=wx.TOP, border=10)
+        main_box.Add(btn3, pos=(9, 2), flag=wx.TOP, border=10)
 
-        main_box.Add(self.table, pos=(9, 0), span=(10, 4), flag=wx.EXPAND | wx.ALL, border=10)
+        main_box.Add(self.table, pos=(10, 0), span=(10, 4), flag=wx.EXPAND | wx.ALL, border=10)
 
         self.tc10.set_value('0')
         self.tc3.Bind(wx.EVT_TEXT_ENTER, self.on_auto_fillin)
@@ -113,6 +122,8 @@ class ChildPanel(wx.Panel):
                 car_user,
                 phone,
                 total_pay,
+                insurance_name,
+                insurance_time,
                 remark
             from orders where order_id=?
             '''
@@ -141,7 +152,9 @@ class ChildPanel(wx.Panel):
                 self.tc8.set_value(info[7])
                 self.tc9.set_value(info[8])
                 self.tc10.set_value(info[9])
-                self.tc11.set_value(info[10])
+                self.tc12.set_value(info[10])
+                self.tc13.set_value(info[11])
+                self.tc11.set_value(info[12])
 
             detail_info = DB_CONN.query(select_detail, [order_id])
             if detail_info:
@@ -217,6 +230,8 @@ class ChildPanel(wx.Panel):
             self.tc8.GetValue(),
             self.tc9.GetValue(),
             self.tc10.GetValue(),
+            self.tc12.GetValue(),
+            self.tc13.GetValue(),
             self.tc11.GetValue(),
         ]
         replace_sql = \
@@ -233,9 +248,11 @@ class ChildPanel(wx.Panel):
             mile,
             phone,
             total_pay,
+            insurance_name,
+            insurance_time,
             remark
         )
-        values (?,?,?,?,?,?,?,?,?,?,?)
+        values (?,?,?,?,?,?,?,?,?,?,?,?,?)
         '''
         DB_CONN.insert(replace_sql, [values])
 
@@ -281,9 +298,13 @@ class ChildGrid(MyGrid):
         self.SetColSize(2, 50)
         self.SetColSize(3, 50)
         self.SetColSize(4, 100)
-        self.SetDefaultRowSize(25)
+        self.SetDefaultRowSize(19)
 
         self.Bind(wx.grid.EVT_GRID_CELL_LEFT_CLICK, self.on_auto_set_pay)
+
+        for row in range(self.row):
+            for col in range(self.col):
+                self.SetCellRenderer(row, col, wx.grid.GridCellAutoWrapStringRenderer())
 
     # 自动设置pay=price*nums
     def on_auto_set_pay(self, e):

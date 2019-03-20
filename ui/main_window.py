@@ -4,10 +4,12 @@ import traceback
 import wx
 import wx.grid
 
+from db import DB_CONN
+
 from .child_window import ChildFrame
 from .grid import MyGrid
 from .textctrl import MyTextCtrl
-from db import DB_CONN
+from .panel import MyPanel
 
 
 class MainFrame(wx.Frame):
@@ -20,7 +22,7 @@ class MainFrame(wx.Frame):
         self.Show()
 
 
-class MainPanel(wx.Panel):
+class MainPanel(MyPanel):
     def __init__(self, parent):
         super(MainPanel, self).__init__(parent=parent)
 
@@ -38,9 +40,12 @@ class MainPanel(wx.Panel):
         st7 = wx.StaticText(self, label='本次里程', style=wx.ALIGN_RIGHT, size=(100, 25))
         st8 = wx.StaticText(self, label='车主姓名', style=wx.ALIGN_RIGHT, size=(100, 25))
         st9 = wx.StaticText(self, label='联系电话', style=wx.ALIGN_RIGHT, size=(100, 25))
-        st10 = wx.StaticText(self, label='合计', style=wx.ALIGN_RIGHT, size=(100, 25))
+        st10 = wx.StaticText(self, label='合计金额', style=wx.ALIGN_RIGHT, size=(100, 25))
         st11 = wx.StaticText(self, label='备注信息', style=wx.ALIGN_RIGHT, size=(100, 25))
-        self.st12 = wx.StaticText(self, label='0/0', style=wx.ALIGN_CENTER, size=(100, 25))
+        st12 = wx.StaticText(self, label='保险公司', style=wx.ALIGN_RIGHT, size=(100, 25))
+        st13 = wx.StaticText(self, label='保险到期', style=wx.ALIGN_RIGHT, size=(100, 25))
+
+        self.st20 = wx.StaticText(self, label='0/0', style=wx.ALIGN_CENTER, size=(100, 25))
 
         self.tc1 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))
         self.tc2 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))
@@ -53,6 +58,8 @@ class MainPanel(wx.Panel):
         self.tc9 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))
         self.tc10 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))
         self.tc11 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER | wx.TE_MULTILINE, size=(220, 70))
+        self.tc12 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))
+        self.tc13 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))
 
         btn1 = wx.Button(self, label='新建')
         btn2 = wx.Button(self, label='查询')
@@ -65,27 +72,32 @@ class MainPanel(wx.Panel):
         main_box.Add(st1, pos=(1, 0), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
         main_box.Add(st2, pos=(1, 2), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
         main_box.Add(st3, pos=(1, 4), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
-        main_box.Add(st4, pos=(1, 6), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
+        main_box.Add(st4, pos=(1, 8), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
         main_box.Add(st5, pos=(2, 0), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
         main_box.Add(st6, pos=(2, 2), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
         main_box.Add(st7, pos=(2, 4), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
         main_box.Add(st8, pos=(3, 0), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
         main_box.Add(st9, pos=(3, 2), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
         main_box.Add(st10, pos=(3, 4), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
-        main_box.Add(st11, pos=(2, 6), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
-        main_box.Add(self.st12, pos=(25, 1), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
+        main_box.Add(st11, pos=(2, 8), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
+        main_box.Add(st12, pos=(1, 6), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
+        main_box.Add(st13, pos=(2, 6), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
+
+        main_box.Add(self.st20, pos=(25, 1), flag=wx.TOP | wx.BOTTOM | wx.RIGHT, border=10)
 
         main_box.Add(self.tc1, pos=(1, 1), flag=wx.TOP | wx.BOTTOM, border=10)
         main_box.Add(self.tc2, pos=(1, 3), flag=wx.TOP | wx.BOTTOM, border=10)
         main_box.Add(self.tc3, pos=(1, 5), flag=wx.TOP | wx.BOTTOM, border=10)
-        main_box.Add(self.tc4, pos=(1, 7), flag=wx.TOP | wx.BOTTOM, border=10)
+        main_box.Add(self.tc4, pos=(1, 9), flag=wx.TOP | wx.BOTTOM, border=10)
         main_box.Add(self.tc5, pos=(2, 1), flag=wx.TOP | wx.BOTTOM, border=10)
         main_box.Add(self.tc6, pos=(2, 3), flag=wx.TOP | wx.BOTTOM, border=10)
         main_box.Add(self.tc7, pos=(2, 5), flag=wx.TOP | wx.BOTTOM, border=10)
         main_box.Add(self.tc8, pos=(3, 1), flag=wx.TOP | wx.BOTTOM, border=10)
         main_box.Add(self.tc9, pos=(3, 3), flag=wx.TOP | wx.BOTTOM, border=10)
         main_box.Add(self.tc10, pos=(3, 5), flag=wx.TOP | wx.BOTTOM, border=10)
-        main_box.Add(self.tc11, pos=(2, 7), span=(2, 1), flag=wx.TOP | wx.BOTTOM, border=10)
+        main_box.Add(self.tc11, pos=(2, 9), span=(2, 1), flag=wx.TOP | wx.BOTTOM, border=10)
+        main_box.Add(self.tc12, pos=(1, 7), flag=wx.TOP | wx.BOTTOM, border=10)
+        main_box.Add(self.tc13, pos=(2, 7), flag=wx.TOP | wx.BOTTOM, border=10)
 
         main_box.Add(btn1, pos=(0, 0), flag=wx.TOP | wx.LEFT, border=10)
         main_box.Add(btn2, pos=(0, 1), flag=wx.TOP, border=10)
@@ -93,7 +105,7 @@ class MainPanel(wx.Panel):
         main_box.Add(btn4, pos=(25, 0), flag=wx.TOP | wx.BOTTOM | wx.LEFT, border=10)
         main_box.Add(btn5, pos=(25, 2), flag=wx.TOP | wx.BOTTOM, border=10)
 
-        main_box.Add(self.table, pos=(5, 0), span=(20, 8), flag=wx.EXPAND | wx.ALL, border=10)
+        main_box.Add(self.table, pos=(5, 0), span=(20, 10), flag=wx.EXPAND | wx.ALL, border=10)
 
         btn1.Bind(wx.EVT_BUTTON, self.on_new)
         btn2.Bind(wx.EVT_BUTTON, self.on_search)
@@ -123,11 +135,11 @@ class MainPanel(wx.Panel):
     def on_double_click(self, e):
         order_id = self.table.GetCellValue(e.GetRow(), 0)
         if order_id:
-            ChildFrame(parent=self, title='查看', size=(620, 720), order_id=order_id)
+            ChildFrame(parent=self, title='查看', order_id=order_id)
 
     # 新建触发
     def on_new(self, e):
-        ChildFrame(parent=self, title='新增', size=(620, 720))
+        ChildFrame(parent=self, title='新增')
 
     # 查询触发
     def on_search(self, e):
@@ -137,7 +149,7 @@ class MainPanel(wx.Panel):
 
         page_nums = math.ceil(orders_count / self.table.row)
         cur_page_num = 0 if page_nums == 0 else 1
-        self.st12.SetLabelText('%s/%s' % (cur_page_num, page_nums))
+        self.st20.SetLabelText('%s/%s' % (cur_page_num, page_nums))
 
     def on_delete(self, e):
         rows = self.table.get_selected_rows()
@@ -168,25 +180,25 @@ class MainPanel(wx.Panel):
 
     # 上一页触发
     def on_pre_search(self, e):
-        page_info = self.st12.GetLabelText()
+        page_info = self.st20.GetLabelText()
         cur_page_num, page_nums = [int(i) for i in page_info.split('/')]
         pre_page_num = cur_page_num - 1
         if pre_page_num > 0:
             # 先清空表格
             self.table.ClearGrid()
             self.show_data((pre_page_num-1)*self.table.row)
-            self.st12.SetLabelText('%s/%s' % (pre_page_num, page_nums))
+            self.st20.SetLabelText('%s/%s' % (pre_page_num, page_nums))
 
     # 下一页触发
     def on_next_search(self, e):
-        page_info = self.st12.GetLabelText()
+        page_info = self.st20.GetLabelText()
         cur_page_num, page_nums = [int(i) for i in page_info.split('/')]
         next_page_num = cur_page_num + 1
         if next_page_num <= page_nums:
             # 先清空表格
             self.table.ClearGrid()
             self.show_data((next_page_num-1) * self.table.row)
-            self.st12.SetLabelText('%s/%s' % (next_page_num, page_nums))
+            self.st20.SetLabelText('%s/%s' % (next_page_num, page_nums))
 
     # 单元格显示数据
     def show_data(self, skip):
@@ -203,6 +215,8 @@ class MainPanel(wx.Panel):
             'car_user',
             'phone',
             'total_pay',
+            'insurance_name',
+            'insurance_time',
             'remark'
         ]
         tc_values = [
@@ -216,6 +230,8 @@ class MainPanel(wx.Panel):
             self.tc8.GetValue(),
             self.tc9.GetValue(),
             self.tc10.GetValue(),
+            self.tc12.GetValue(),
+            self.tc13.GetValue(),
             self.tc11.GetValue()
         ]
 
@@ -239,6 +255,8 @@ class MainPanel(wx.Panel):
             pay_time,
             mile,
             total_pay,
+            insurance_name,
+            insurance_time,
             remark 
         from orders where %s order by order_id desc limit %s,%s
         ''' \
@@ -266,8 +284,8 @@ class MainGrid(MyGrid):
     def __init__(self, parent):
         super(MainGrid, self).__init__(parent=parent)
 
-        self.row = 20
-        self.col = 11
+        self.row = 25
+        self.col = 13
 
         self._create()
 
@@ -284,18 +302,23 @@ class MainGrid(MyGrid):
         self.SetColLabelValue(7, '结算日期')
         self.SetColLabelValue(8, '本次里程')
         self.SetColLabelValue(9, '合计金额')
-        self.SetColLabelValue(10, '备注信息')
+        self.SetColLabelValue(10, '保险公司')
+        self.SetColLabelValue(11, '保险到期')
+        self.SetColLabelValue(12, '备注信息')
 
         self.SetDefaultColSize(110)
-        self.SetDefaultRowSize(22)
+        self.SetDefaultRowSize(19)
         self.SetColSize(3, 60)
         self.SetColSize(8, 50)
         self.SetColSize(9, 50)
-        self.SetColSize(10, 200)
+        self.SetColSize(12, 200)
 
         for row in range(self.row):
             for col in range(self.col):
                 self.SetReadOnly(row, col)
+                self.SetCellRenderer(row, col, wx.grid.GridCellAutoWrapStringRenderer())
+
+
 
 
 

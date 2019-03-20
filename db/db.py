@@ -83,6 +83,8 @@ CREATE_ORDER = '''
         pay_time    integer default 0,
         mile        integer default 0,
         total_pay   integer default 0,
+        insurance_name varchar(50) default '',
+        insurance_time integer default 0,
         remark      text default ''
     );
 '''
