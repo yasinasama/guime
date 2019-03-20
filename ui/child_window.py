@@ -12,7 +12,7 @@ from .panel import MyPanel
 
 
 class ChildFrame(wx.Frame):
-    def __init__(self, parent, title, size=(620, 700), order_id=None):
+    def __init__(self, parent, title, size=(650, 750), order_id=None):
         super(ChildFrame, self).__init__(parent=parent, title=title, size=size)
 
         ChildPanel(self, order_id)
