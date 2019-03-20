@@ -7,7 +7,7 @@ class UI(wx.App):
     def __init__(self):
         super(UI, self).__init__()
 
-        MainFrame(title='维修记录单管理软件', size=(1300, 800))
+        MainFrame(title='维修记录单管理软件', size=(1300, 750))
         self.MainLoop()
 
 

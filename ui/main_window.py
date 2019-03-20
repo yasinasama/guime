@@ -57,7 +57,7 @@ class MainPanel(MyPanel):
         self.tc8 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))
         self.tc9 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))
         self.tc10 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))
-        self.tc11 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER | wx.TE_MULTILINE, size=(220, 70))
+        self.tc11 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER | wx.TE_MULTILINE, size=(200, 70))
         self.tc12 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))
         self.tc13 = MyTextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(100, 25))
 
@@ -306,11 +306,14 @@ class MainGrid(MyGrid):
         self.SetColLabelValue(11, '保险到期')
         self.SetColLabelValue(12, '备注信息')
 
-        self.SetDefaultColSize(110)
+        self.SetDefaultColSize(100)
         self.SetDefaultRowSize(20)
         self.SetColSize(3, 60)
+        self.SetColSize(6, 80)
+        self.SetColSize(7, 80)
         self.SetColSize(8, 50)
         self.SetColSize(9, 50)
+        self.SetColSize(11, 80)
         self.SetColSize(12, 200)
 
         for row in range(self.row):
