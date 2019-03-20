@@ -7,6 +7,9 @@ if sys.platform == "win32":
 else:
     base = None
 
+opts = {"include_files": ["db/", "ui/", "utils/"]}
+
+
 executables = [
     Executable(
         'run.py',
@@ -19,5 +22,7 @@ setup(
     name="guime",
     version="0.2",
     description="guime app",
+    author="yasina",
+    options={"build_exe": opts},
     executables=executables
 )
