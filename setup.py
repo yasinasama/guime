@@ -7,22 +7,18 @@ if sys.platform == "win32":
 else:
     base = None
 
-opts = {"include_files": ["db/", "ui/", "utils/"]}
-
-
 executables = [
     Executable(
         'run.py',
         base=base,
-        targetName='guime-app'
+        targetName='维修记账软件.exe'
     )
 ]
 
 setup(
-    name="guime",
+    name="维修记账软件",
     version="0.2",
-    description="guime app",
+    description="维修记账软件",
     author="yasina",
-    options={"build_exe": opts},
     executables=executables
 )
