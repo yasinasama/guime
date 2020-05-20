@@ -161,6 +161,7 @@ class ChildPanel(MyPanel):
                 for row, value in enumerate(detail_info):
                     if row >= 10:
                         self.table.AppendRows()
+                        self.table.row += 1
                     for col in range(self.table.col):
                         self.table.set_cell_value(row, col, value[col])
 
@@ -185,6 +186,7 @@ class ChildPanel(MyPanel):
 
     def on_add(self, e):
         self.table.AppendRows()
+        self.table.row += 1
 
     def on_delete(self, e):
         rows = self.table.get_selected_rows()
@@ -276,11 +278,11 @@ class ChildPanel(MyPanel):
 
 
 class ChildGrid(MyGrid):
-    def __init__(self, parent):
+    def __init__(self, parent, row=10, col=5):
         super(ChildGrid, self).__init__(parent=parent)
 
-        self.row = 10
-        self.col = 5
+        self.row = row
+        self.col = col
 
         self._create()
 
